@@ -6,6 +6,9 @@ class LinkedPair:
         self.key = key
         self.value = value
         self.next = None
+    
+    def __repr__(self):
+        return f"{self.key} = {self.value}"
 
 class HashTable:
     '''
@@ -44,47 +47,51 @@ class HashTable:
 
 
     def insert(self, key, value):
-        '''
-        Store the value with the given key.
+        hashed_key = self._hash_mod(key)
+        node = self.storage[hashed_key]
 
-        Hash collisions should be handled with Linked List Chaining.
-
-        Fill this in.
-        '''
-        pass
-
+        if node is None:
+            node = LinkedPair(key, value)
+            self.storage[hashed_key] = node
+        else:
+            print(node.next)
+            node.next = LinkedPair(key, value)
 
 
     def remove(self, key):
-        '''
-        Remove the value stored with the given key.
+        hashed_key = self._hash_mod(key)
+        node = self.storage[hashed_key]
 
-        Print a warning if the key is not found.
+        if node is None:
+            return print(f"{key} could not be found.")
 
-        Fill this in.
-        '''
-        pass
+        self.storage[key] = None
 
 
     def retrieve(self, key):
-        '''
-        Retrieve the value stored with the given key.
+        hashed_key = self._hash_mod(key)
+        node = self.storage[hashed_key]
 
-        Returns None if the key is not found.
+        while node:
+            if node.key == key:
+                return node.value
 
-        Fill this in.
-        '''
-        pass
+            node = node.next
+
+        return None
 
 
     def resize(self):
-        '''
-        Doubles the capacity of the hash table and
-        rehash all key/value pairs.
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
 
-        Fill this in.
-        '''
-        pass
+        for i in range(self.capacity // 2):
+            node = self.storage[i]
+
+            if node != None:
+                pass
+
+        self.storage = new_storage
 
 
 

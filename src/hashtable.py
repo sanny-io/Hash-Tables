@@ -53,10 +53,10 @@ class HashTable:
         if node is None:
             node = LinkedPair(key, value)
             self.storage[hashed_key] = node
-        else:
-            print(node.next)
-            node.next = LinkedPair(key, value)
-
+        else: # collision
+            new_head = LinkedPair(key, value)
+            new_head.next = node
+            self.storage[hashed_key] = new_head
 
     def remove(self, key):
         hashed_key = self._hash_mod(key)
@@ -65,8 +65,21 @@ class HashTable:
         if node is None:
             return print(f"{key} could not be found.")
 
-        self.storage[key] = None
+        previous_node = None
 
+        while node != None:
+            if node.key == key:
+                if previous_node:
+                    previous_node.next = node.next
+                else:
+                    self.storage[hashed_key] = node.next
+                
+                return
+            
+            previous_node = node
+            node = node.next
+        
+        print(f"{key} could not be found.")
 
     def retrieve(self, key):
         hashed_key = self._hash_mod(key)
@@ -82,16 +95,14 @@ class HashTable:
 
 
     def resize(self):
+        old_storage = self.storage
         self.capacity *= 2
-        new_storage = [None] * self.capacity
+        self.storage = [None] * self.capacity
 
-        for i in range(self.capacity // 2):
-            node = self.storage[i]
-
-            if node != None:
-                pass
-
-        self.storage = new_storage
+        for node in old_storage:
+            while node != None:
+                self.insert(node.key, node.value)
+                node = node.next
 
 
 
